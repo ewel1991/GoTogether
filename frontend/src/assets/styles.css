@@ -1,0 +1,612 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+html {
+  font-family: "Montserrat", sans-serif;
+  height: 100%;
+  margin:0;
+}
+body {
+  
+  background-image: url("./background.png");
+  background-size: 15%;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+}
+
+
+main {
+  flex: 1; 
+}
+
+header {
+  background-color: #CF904F;
+  margin: auto -16px;
+  padding: 16px 32px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  color: #fff;
+  font-family: "McLaren", cursive;
+  font-weight: 200;
+}
+
+footer {
+  background-color: #CF904F;
+  text-align: center;
+  width: 100%;
+  height: 2.5rem;
+  margin-top: auto;  
+  position: relative; 
+}
+
+footer p {
+  color: #ccc;
+}
+
+
+p{
+  color:black;
+}
+.note button {
+  position: relative;
+  float: right;
+  margin-right: 10px;
+  color: #f5ba13;
+  border: none;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  outline: none;
+}
+
+
+.auth-container {
+  width: 400px;
+  margin: 80px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: "Montserrat", sans-serif;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.auth-form h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.auth-form p {
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+}
+
+.auth-form input {
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.auth-form button {
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  background-color: #d49f4f;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.auth-form .google {
+  background-color: #db4437;
+}
+
+.form-toggle {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.form-toggle button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-family: "McLaren", cursive;
+  font-weight: 200;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-icon {
+  color: white;
+  font-size: 40px;
+}
+
+
+.menu-buttons button {
+  padding: 15px 25px;
+  font-size: 1.1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #cf904f;
+  color: white;
+  transition: 0.3s ease;
+}
+
+.menu-buttons button:hover {
+  background-color: #a86e33;
+}
+
+
+
+.menu-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 40px;
+  flex-wrap: wrap;  
+}
+
+
+.menu-item {
+  display: flex;
+  flex-direction: column;   
+  align-items: center;
+  width: 320px;
+  flex: 1;
+}
+
+
+.form-container {
+  background: #fff;
+  margin-top: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 100%; 
+  max-height: 0;            
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+  padding: 0 20px;
+}
+
+
+.form-container.open {
+  max-height: none;        
+  padding: 20px;            
+}
+
+.trip-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  font-family: "Montserrat", sans-serif;
+  margin-bottom: 20px; 
+}
+
+.trip-form .MuiTextField-root {
+  background: #fafafa;
+  border-radius: 6px;
+}
+
+.trip-form button {
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 8px 16px; 
+  font-size: 0.9em;  
+}
+
+.trip-form .MuiFormControlLabel-root {
+  font-size: 0.9em;
+  color: #333;
+}
+
+main.menu {
+  flex: 1;
+  display: flex;
+  /*justify-content: center; */
+  align-items: center;
+  flex-direction: column;
+  padding-top: 40px;
+  padding-bottom: 60px;
+  gap: 20px;
+  overflow-y: auto;
+
+}
+
+
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.menu-item button {
+  width: 100%;
+  height: 80px;
+  text-align: left;   
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+ 
+}
+
+.my-trips-offers .MuiIconButton-root {
+  width: auto;
+  padding: 6px; 
+}
+
+/* Kontener wyników */
+.search-results {
+ max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: black;
+}
+
+/* Nagłówek */
+.search-results h3 {
+  text-align: center;
+  color: #CF904F;
+  background-color: white; 
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+
+.search-results p {
+  
+  color: black;
+  
+}
+
+/* Karta oferty */
+.offer-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  background-color: #fff9f0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.offer-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Tekst w karcie */
+.offer-card p {
+  margin: 0.3rem 0;
+  color: #333;
+}
+
+/* Przycisk dołącz */
+.offer-card button {
+  margin-top: 0.8rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #CF904F;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.offer-card button:hover {
+  background-color: #a86e33;
+}
+
+/* Przycisk powrotu */
+.search-results > button {
+  margin-top: 2rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #ccc;
+  color: #333;
+  cursor: pointer;
+  align-self: center;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.search-results > button:hover {
+  background-color: #aaa;
+}
+
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* odstęp między ikonami */
+}
+
+.notifications-button {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 36px; /* dopasowanie do logout-icon */
+}
+
+.notifications-button .badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+/* Kolor paragrafów w sekcji powiadomień */
+.search-results ul {
+  color: black;
+}
+
+.search-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.back-button {
+  align-self: center;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #CF904F;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #a86e33;
+}
+
+
+.leaflet-container {
+  height: 300px; 
+  width: 100%;
+  border-radius: 12px;
+}
+
+
+.notifications-header {
+  color: white;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+
+
+/* Kontener powiadomień */
+.notifications-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: black;
+}
+
+/* Nagłówek */
+.notifications-title {
+  text-align: center;
+  color: #CF904F;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+/* Brak powiadomień */
+.notifications-empty {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #333;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+/* Karta powiadomienia */
+.notification-card {
+  border-radius: 12px;
+  background-color: #fff9f0;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.notification-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Chip statusu */
+.notification-chip {
+  margin-top: 8px;
+}
+
+/* Przyciski akceptacji/odrzucenia */
+.notification-buttons {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+/* Przycisk powrotu */
+.back-button {
+  margin-top: 20px;
+  align-self: center;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  background-color: #CF904F;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #a86e33;
+}
+
+
+
+/* Etykieta "Dołączono" dla kart */
+.joined-label {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: white;
+}
+
+/* Różne kolory dla pasażera i kierowcy */
+.joined-label.passenger {
+  background-color: #007bff; /* niebieski */
+}
+
+.joined-label.driver {
+  background-color: #28a745; /* zielony */
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-messages {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 12px;
+  height: 300px;
+  overflow-y: auto;
+  background-color: #fafafa;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.chat-message.left {
+  justify-content: flex-start;
+}
+
+.chat-message.right {
+  justify-content: flex-end;
+}
+
+.chat-bubble {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 12px;
+  max-width: 70%;
+  word-break: break-word;
+}
+
+.chat-bubble.left {
+  background-color: #e0e0e0;
+  color: black;
+}
+
+.chat-bubble.right {
+  background-color: #CF904F;
+  color: white;
+}
+
+.chat-input-container {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.chat-input {
+  flex: 1;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+}
+
+.chat-button {
+  background-color: #CF904F;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Responsywność */
+@media (max-width: 600px) {
+  .offer-card {
+    padding: 0.8rem 1rem;
+  }
+
+  .offer-card button, 
+  .search-results > button {
+    width: 100%;
+  }
+}
