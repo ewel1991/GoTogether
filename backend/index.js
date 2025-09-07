@@ -413,9 +413,7 @@ const joinRes = await db.query(
   [userId, tripId, offerId]
 );
     const joinId = joinRes.rows[0].id;
-
-    const newJoinId = result.rows[0].id;
-    await fixJoins(newJoinId);
+    await fixJoins(joinId);
    
 
     console.log("[/join-trip/:id] Tworzę powiadomienie dla właściciela podróży");
@@ -510,33 +508,46 @@ app.post("/join-offer/:id", async (req, res) => {
 
     console.log("[/join-offer/:id] Dodaję join do bazy");
     const joinRes = await db.query(
-      "INSERT INTO joins (user_id, trip_id, offer_id) VALUES ($1, $2, $3) RETURNING id",
+      `INSERT INTO joins (user_id, trip_id, offer_id)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (user_id, trip_id, offer_id) DO NOTHING
+       RETURNING id`,
       [userId, tripId || null, offerId]
     );
-    const joinId = joinRes.rows[0].id;
-   
-    const newJoinId = result.rows[0].id;
-    await fixJoins(newJoinId);
 
-    console.log("[/join-offer/:id] Tworzę powiadomienie dla właściciela oferty");
-    await db.query(
-  `INSERT INTO notifications (user_id, join_id, offer_id, message) 
-   VALUES ($1, $2, $3, $4)`,
-  [
-    offer.user_id,       // właściciel oferty
-    joinId,              // ID zgłoszenia (join)
-    offer.id,            // ID oferty
-    `Użytkownik dołączył do Twojej oferty z ${offer.origin} do ${offer.destination} w dniu ${offer.date.toISOString().slice(0,10)}.`
-  ]
-);
+    let joinId;
+    if (joinRes.rows.length > 0) {
+      joinId = joinRes.rows[0].id;
+      console.log("[/join-offer/:id] Utworzono nowy join", { joinId });
 
-    console.log("[/join-offer/:id] Zakończono sukcesem", { joinId });
-    res.json({ message: "Dołączono do oferty i powiadomienie wysłane!", joinId });
+      // tylko gdy nowy join faktycznie powstał -> powiadomienie
+      await db.query(
+        `INSERT INTO notifications (user_id, join_id, offer_id, message) 
+         VALUES ($1, $2, $3, $4)`,
+        [
+          offer.user_id,
+          joinId,
+          offer.id,
+          `Użytkownik dołączył do Twojej oferty z ${offer.origin} do ${offer.destination} w dniu ${offer.date.toISOString().slice(0,10)}.`
+        ]
+      );
+    } else {
+      // join już istniał
+      const existing = await db.query(
+        "SELECT id FROM joins WHERE user_id=$1 AND trip_id=$2 AND offer_id=$3",
+        [userId, tripId, offerId]
+      );
+      joinId = existing.rows[0].id;
+      console.log("[/join-offer/:id] Join już istniał", { joinId });
+    }
+
+    res.json({ message: "Dołączono do oferty", joinId });
   } catch (err) {
     console.error("[/join-offer/:id] Błąd serwera", err);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 // POST /join-offer/:id/accept
 

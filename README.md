@@ -131,18 +131,26 @@ VITE_GEMINI_API_KEY=...
 
 ```
 goTogether/
-├─ backend/
-│  ├─ index.js
 │
-├─ frontend/
-│  ├─ src/
-│  │  ├─ App.jsx
-│  │  ├─ components/
-│  │  ├─ buttons/
-│  │  └─ auth/
-│  └─ public/
-└─ README.md
-```
+├── backend/ # Serwer Node.js + Express
+│ ├── index.js # Główny plik backendu
+│ ├── package.json # Zależności backendu
+│ ├── .env # Zmienne środowiskowe backendu
+│ └── .env.example # Przykład konfiguracji env
+│
+├── frontend/ # Aplikacja React (Vite)
+│ ├── src/
+│ │ ├── assets/ # Zasoby (grafiki, ikony)
+│ │ ├── components/ # Komponenty React
+│ │ └── index.jsx # Punkt startowy React
+│ ├── public/ # Pliki statyczne
+│ ├── index.html # Główna strona HTML
+│ ├── vite.config.js # Konfiguracja Vite
+│ ├── package.json # Zależności frontendu
+│ └── .env # Zmienne środowiskowe frontendu
+│
+├── .gitignore # Ignorowane pliki w Git
+└── README.md # Dokumentacja projektu
 
 ---
 
