@@ -355,15 +355,15 @@ app.get("/offers", async (req, res) => {
 
   try {
     const result = await db.query(
-      `SELECT o.*,
-              COUNT(j.id) AS passengers_count
-       FROM offers o
-       LEFT JOIN joins j ON o.id = j.offer_id
-       WHERE o.user_id = $1
-       GROUP BY o.id
-       ORDER BY o.date DESC`,
-      [req.user.id]
-    );
+  `SELECT o.*,
+          COUNT(j.id) FILTER (WHERE j.status = 'accepted') AS passengers_count
+   FROM offers o
+   LEFT JOIN joins j ON o.id = j.offer_id AND j.status = 'accepted'
+   WHERE o.user_id = $1
+   GROUP BY o.id
+   ORDER BY o.date DESC`,
+  [req.user.id]
+);
 
     res.json(result.rows);
   } catch (err) {
