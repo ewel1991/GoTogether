@@ -555,7 +555,9 @@ app.post("/join-offer/:id", async (req, res) => {
 
 // POST /join-offer/:id/accept
 
- app.post("/join-offer/:id/accept", async (req, res) => {
+ 
+
+    app.post("/join-offer/:id/accept", async (req, res) => {
   if (!req.isAuthenticated()) {
     console.warn("[/join-offer/:id/accept] Brak autoryzacji");
     return res.status(401).json({ message: "Not authenticated" });
@@ -566,47 +568,58 @@ app.post("/join-offer/:id", async (req, res) => {
   console.log("[/join-offer/:id/accept] start", { joinId, userId });
 
   try {
-    // Pobranie zgłoszenia wraz z właścicielem oferty i liczbą miejsc
+    await db.query("BEGIN");
+
+    // Pobranie zgłoszenia wraz z właścicielem oferty
     const joinRes = await db.query(
-      `SELECT jo.id, jo.user_id AS joiner_id, jo.trip_id, o.id AS offer_id, o.user_id AS owner_id, o.seats_available
+      `SELECT jo.id, jo.user_id AS joiner_id, jo.trip_id, o.id AS offer_id, o.user_id AS owner_id
        FROM joins jo
        JOIN offers o ON jo.offer_id = o.id
-       WHERE jo.id = $1`,
+       WHERE jo.id = $1
+       FOR UPDATE`,
       [joinId]
     );
 
     if (joinRes.rows.length === 0) {
+      await db.query("ROLLBACK");
       console.warn("[/join-offer/:id/accept] Nie znaleziono zgłoszenia", { joinId });
       return res.status(404).json({ message: "Nie znaleziono zgłoszenia" });
     }
 
-    const { joiner_id, trip_id, offer_id, owner_id, seats_available } = joinRes.rows[0];
+    const { joiner_id, trip_id, offer_id, owner_id } = joinRes.rows[0];
 
     if (owner_id !== userId) {
+      await db.query("ROLLBACK");
       console.warn("[/join-offer/:id/accept] Brak uprawnień", { owner_id, userId });
       return res.status(403).json({ message: "Brak uprawnień" });
     }
 
-    // Sprawdzenie liczby miejsc (jeśli jest przypisana podróż)
+    // Sprawdzenie liczby osób (domyślnie 1)
     let people = 1;
     if (trip_id) {
       const tripRes = await db.query("SELECT people FROM trips WHERE id=$1", [trip_id]);
       people = tripRes.rows.length ? tripRes.rows[0].people : 1;
     }
 
-    if (seats_available < people) {
-      console.warn("[/join-offer/:id/accept] Brak miejsc", { seats_available, people });
-      return res.status(400).json({ message: "Brak wystarczającej liczby miejsc" });
-    }
-
-    // Aktualizacja statusu zgłoszenia i liczby miejsc w ofercie
-    await db.query("UPDATE joins SET status='accepted' WHERE id=$1", [joinId]);
-    await db.query(
-      "UPDATE offers SET seats_available = seats_available - $1 WHERE id=$2",
+    // Atomowa aktualizacja liczby miejsc
+    const updateResult = await db.query(
+      `UPDATE offers 
+       SET seats_available = seats_available - $1 
+       WHERE id = $2 AND seats_available >= $1
+       RETURNING seats_available`,
       [people, offer_id]
     );
 
-    // Powiadomienie dla użytkownika, który zgłosił się do oferty
+    if (updateResult.rows.length === 0) {
+      await db.query("ROLLBACK");
+      console.warn("[/join-offer/:id/accept] Brak miejsc", { offer_id, people });
+      return res.status(400).json({ message: "Brak wystarczającej liczby miejsc" });
+    }
+
+    // Aktualizacja statusu zgłoszenia
+    await db.query("UPDATE joins SET status='accepted' WHERE id=$1", [joinId]);
+
+    // Powiadomienie
     await db.query(
       `INSERT INTO notifications (user_id, join_id, offer_id, trip_id, message, read)
        VALUES ($1, $2, $3, $4, $5, false)`,
@@ -619,14 +632,17 @@ app.post("/join-offer/:id", async (req, res) => {
       ]
     );
 
+    await db.query("COMMIT");
     console.log("[/join-offer/:id/accept] Zgłoszenie zaakceptowane", { joinId });
     res.json({ message: "Zaakceptowano zgłoszenie i zaktualizowano liczbę miejsc" });
 
   } catch (err) {
+    await db.query("ROLLBACK");
     console.error("[/join-offer/:id/accept] Błąd serwera", err);
     res.status(500).json({ message: "Błąd serwera" });
   }
 });
+
 
 
 // POST /join-trip/:id/accept
