@@ -12,18 +12,32 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkLogin = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/me", { credentials: "include" });
-        setIsLoggedIn(res.ok);
-      } catch {
-        setIsLoggedIn(false);
-      } finally {
-        setLoading(false);
+  const checkLogin = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/me", { 
+        credentials: "include",
+        signal: AbortController ? new AbortController().signal : undefined // Dodanie abort controller
+      });
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
-    };
-    checkLogin();
-  }, []);
+      
+      setIsLoggedIn(true);
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.log('Request was aborted');
+        return;
+      }
+      console.error('Login check failed:', error);
+      setIsLoggedIn(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  checkLogin();
+}, []);
 
   const handleLogin = async () => setIsLoggedIn(true);
 
