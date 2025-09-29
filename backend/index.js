@@ -39,7 +39,11 @@ const db = new pg.Pool({
 
 db.query("SELECT NOW()")
   .then(() => console.log("✅ DB connected."))
-  .catch((err) => console.error("❌ DB connection error:", err));
+  .catch((err) => {
+    console.error("❌ DB connection error:", err);
+    // Wyłącz aplikację jeśli baza danych jest niedostępna
+    process.exit(1);
+  });
 
   // Funkcja do usuwania przeterminowanych ofert i przeszłych podróży
 async function deleteExpiredEntries() {
