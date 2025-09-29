@@ -991,7 +991,15 @@ app.post("/search-offers", async (req, res) => {
 
   try {
     // Pobieramy wszystkie oferty z DB
-    const allOffersResult = await db.query("SELECT * FROM offers");
+
+    const page = parseInt(req.body.page) || 1;
+    const limit = parseInt(req.body.limit) || 50;
+    const offset = (page - 1) * limit;
+
+const allOffersResult = await db.query(
+  "SELECT * FROM offers WHERE valid_until IS NULL OR valid_until >= CURRENT_DATE ORDER BY created_at DESC LIMIT $1 OFFSET $2",
+  [limit, offset]
+)
     const allOffers = allOffersResult.rows;
 
     // Koordynaty miejsca startu i celu wyszukiwania
